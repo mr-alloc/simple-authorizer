@@ -1,13 +1,13 @@
-package io.alloc.simepleauthorizer;
+package io.alloc.simpleauthorizer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SimepleAuthorizerApplication {
+public class Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(SimepleAuthorizerApplication.class, args);
+        SpringApplication.run(Application.class, args);
     }
 
 }

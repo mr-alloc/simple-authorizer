@@ -1,10 +1,10 @@
-package io.alloc.simepleauthorizer;
+package io.alloc.simpleauthorizer;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SimepleAuthorizerApplicationTests {
+class ApplicationTests {
 
     @Test
     void contextLoads() {
