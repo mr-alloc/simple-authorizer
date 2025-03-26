@@ -331,5 +331,47 @@ OAuth는 인가 서버와 안전하게 인증하는 기능(즉, 클라이언트 
 
 ## 2.3 클라이언트 인증:client-authentication
 
+클라이언트 유형이 기밀(confidential)이라면, 클라이언트와 인가서버는 인가서버의 보안 요구사항에 알맞은 클라이언트 인증방법을 만든다.
+인가서버는 보안 요구사항을 충족하는 모든 클라이언트 인증 형식을 허용해도 된다.
 
+기밀 클라이언트는 일반적으로 인가 서버와의 인증을 위해 사용되는 클라이언트 자격 증명 세트를 발급 받거나 설정한다 (예: 패스워드, 공개/사설 키 페어).
 
+인가서버는 공개 클라이언트와 클라이언트 인증방법을 설정할 수 있다. 그러나, 인가 서버는 클라이언트를 식별하기 위한 목적으로 공개 클라이언트 인증에 의존해서는 안 된다.  
+
+클라이언트는 각 요청에서 하나를 초과하는 인증방법을 사용하면 안된다.
+
+## 2.3.1 클라이언트 패스워드::client-password
+
+클라이언트 패스워드를 소유한 클라이언트(공개 클라이언트는 소유 불가)는 인가 서버와 인증하기 위해 [RFC 2617](https://datatracker.ietf.org/doc/html/rfc2617)에 정의된 HTTP 기본 인증 스킴을 사용할 수 있다.
+
+클라이언트 식별자는 [부록 B](https://datatracker.ietf.org/doc/html/rfc6749#appendix-B)에 따라 "application/x-www-form-urlencoded" 인코딩 알고리즘을 사용하여 인코딩 하고,
+인코딩된 값은 유저명으로 사용된다; 클라이언트 패스워드는  같은 알고리즘을 사용하여 인코딩 되며, 패스워드로 사용된다. 인가 서버는 클라이언트 패스워드를 발급받은 클라이언트의 인증을 위해 HTTP 기본 인증 스킴을 지원해야만 한다.
+
+예시: `Authorization: Basic czZCaGRSa3F0Mzo3RmpmcDBaQnIxS3REUmJuZlZkbUl3`
+
+대안으로, 인가 서버는 다음의 파라미터를 사용하여 요청 본문안에 클라이언트 자격증명을 포함하는 것을 지원 할 수 있다:
+
+**client_id (클라이언트 ID)**
+
+(필수) [섹션 2.2](https://datatracker.ietf.org/doc/html/rfc6749#section-2.2)에 설명에 따라 과정 동안 클라이언트에 발급된 클라이언트 식별자.
+
+**client_secret (클라이언트 비밀)**
+
+(필수) 클라이언트 비밀. 클라이언트 비밀이 빈문자열이라면 클라이언트는 이 파라미터를 생략할 수 있다.
+
+두 파라미터를 사용하여 요청 본문에 클라이언트 자격 증명을 포함하는 것은 권장되지 않으며, HTTP 기본 인증 스킴을 직접 활용할 수 없는 클라이언트는 제한되는것을 권장한다
+(또는 다른 패스워드 기반 HTTP 인증 스킴들). 파라미터는 요청 본문으로만 전송될 수 있으며 요청 URI에 절대 포함되어선 안 된다.
+
+예를 들어, 본문 파라미터를 사용하여 액세스토큰([섹션 6](https://datatracker.ietf.org/doc/html/rfc6749#section-6))을 새로고침하는 요청: 
+
+```
+POST /token HTTP/1.1
+HOST: server.example.com
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=refresh_token&refresh_token=tGzv3JOkF0XG5Qx2TlKWIA&client_id=s6BhdRkqt3&client_secret=7Fjfp0ZBr1KtDRbnfVdmIw
+```
+
+인가 서버는 패스워드 인증을 사용하여 요청을 보낼 때 [섹션 1.6](https://datatracker.ietf.org/doc/html/rfc6749#section-1.6)에 설명된 TLS 사용을 요구해야만 한다.
+
+이 클라이언트 인증 방법은 패스워드를 포함하므로, 인가 서버는 이것을 사용하는 모든 엔드포인트를 브루트 포스(비밀번호를 모두 시도) 공격으로부터 보호해야만 한다. 
